@@ -1,0 +1,13 @@
+[Unit]
+Description=PeripheralHub — Wireless Peripheral Battery Monitor Daemon
+Documentation=https://github.com/clevim/OpenSharkX11
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/peripheralhub daemon --interval 30
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target

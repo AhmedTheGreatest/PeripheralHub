@@ -1,0 +1,19 @@
+{
+  "poll_interval": 30,
+  "separator": " | ",
+  "use_colors": true,
+  "colors": {
+    "normal": "#a6e3a1",
+    "low": "#fab387",
+    "critical": "#f38ba8",
+    "charging": "#89b4fa",
+    "disconnected": "#9399b2"
+  },
+  "icons": {
+    "mouse": "󰍽",
+    "keyboard": "󰌌",
+    "headset": "󰋋",
+    "charging": "󱐋",
+    "disconnected": "off"
+  }
+}

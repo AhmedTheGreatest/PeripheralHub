@@ -1,0 +1,18 @@
+# PeripheralHub udev rules for wireless peripheral battery monitoring
+# Grants user-level read/write permissions for specific peripheral receivers
+
+# Attack Shark X11 (Wireless: 1d57:fa60, Wired: 1d57:fa55)
+KERNEL=="hidraw*", ATTRS{idVendor}=="1d57", ATTRS{idProduct}=="fa60", MODE="0666", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="1d57", ATTR{idProduct}=="fa60", MODE="0666", TAG+="uaccess"
+KERNEL=="hidraw*", ATTRS{idVendor}=="1d57", ATTRS{idProduct}=="fa55", MODE="0666", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="1d57", ATTR{idProduct}=="fa55", MODE="0666", TAG+="uaccess"
+
+# AULA F75 / F99 (Wireless: 3554:fa09, Wired: 258a:010c)
+KERNEL=="hidraw*", ATTRS{idVendor}=="3554", ATTRS{idProduct}=="fa09", MODE="0666", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="3554", ATTR{idProduct}=="fa09", MODE="0666", TAG+="uaccess"
+KERNEL=="hidraw*", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="010c", MODE="0666", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="258a", ATTR{idProduct}=="010c", MODE="0666", TAG+="uaccess"
+
+# Razer Barracuda X (2022) 2.4GHz Dongle (1532:0552)
+KERNEL=="hidraw*", ATTRS{idVendor}=="1532", ATTRS{idProduct}=="0552", MODE="0666", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="1532", ATTR{idProduct}=="0552", MODE="0666", TAG+="uaccess"

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "peripheralhub"
+version = "1.0.0"
+description = "Unified Linux Peripheral Battery Monitor for Polybar & i3"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pyusb>=1.2.1",
+    "hidapi>=0.14.0",
+]
+
+[project.scripts]
+peripheralhub = "src.cli:main"
