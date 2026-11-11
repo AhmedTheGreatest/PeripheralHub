@@ -1,5 +1,7 @@
 {
   "poll_interval": 30,
+  "keyboard_query_interval": 600,
+  "keyboard_idle_threshold": 45,
   "separator": " | ",
   "use_colors": true,
   "colors": {

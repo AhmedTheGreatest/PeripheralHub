@@ -20,6 +20,8 @@ from .notifications import NotificationManager
 
 DEFAULT_CONFIG: Dict[str, Any] = {
     "poll_interval": 30,
+    "keyboard_query_interval": 600,
+    "keyboard_idle_threshold": 45,
     "separator": " | ",
     "use_colors": True,
     "colors": {
@@ -99,7 +101,7 @@ def cmd_status(args, config: Dict[str, Any]):
     states = PeripheralMonitor.load_cached_states()
     if states is None:
         # If cache is missing, do an immediate hardware poll
-        monitor = PeripheralMonitor()
+        monitor = PeripheralMonitor(config=config)
         states = monitor.poll_all()
 
     order = ["attack_shark_x11", "aula_f75", "razer_barracuda_x"]
@@ -119,7 +121,7 @@ def cmd_details(args, config: Dict[str, Any]):
     """Display detailed peripheral information in terminal and/or desktop notification."""
     states = PeripheralMonitor.load_cached_states()
     if states is None:
-        monitor = PeripheralMonitor()
+        monitor = PeripheralMonitor(config=config)
         states = monitor.poll_all()
 
     lines = []
@@ -166,8 +168,8 @@ def cmd_json(args, config: Dict[str, Any]):
     """Output machine-readable JSON."""
     states = PeripheralMonitor.load_cached_states()
     if states is None or args.fresh:
-        monitor = PeripheralMonitor()
-        states = monitor.poll_all()
+        monitor = PeripheralMonitor(config=config)
+        states = monitor.poll_all(force=args.fresh)
 
     out = {dev_id: state.to_dict() for dev_id, state in states.items()}
     print(json.dumps(out, indent=2 if args.pretty else None))
@@ -175,8 +177,8 @@ def cmd_json(args, config: Dict[str, Any]):
 
 def cmd_poll_once(args, config: Dict[str, Any]):
     """Perform immediate hardware poll and update cache."""
-    monitor = PeripheralMonitor()
-    states = monitor.poll_all()
+    monitor = PeripheralMonitor(config=config)
+    states = monitor.poll_all(force=True)
     print(f"Polled {len(states)} devices. Cache updated at {get_cache_file()}")
     for dev_id, st in states.items():
         print(f"  - {st.name}: {st.formatted_battery} ({st.charging_status.value})")
@@ -185,7 +187,7 @@ def cmd_poll_once(args, config: Dict[str, Any]):
 def cmd_daemon(args, config: Dict[str, Any]):
     """Run monitoring daemon process."""
     interval = args.interval or config.get("poll_interval", 30)
-    monitor = PeripheralMonitor()
+    monitor = PeripheralMonitor(config=config)
     monitor.run_daemon(interval=interval)
 
 

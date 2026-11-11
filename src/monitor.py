@@ -11,7 +11,7 @@ import time
 import signal
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 from .battery import DeviceState
 from .devices.base import BasePeripheralAdapter
@@ -38,11 +38,14 @@ def get_cache_file() -> Path:
 class PeripheralMonitor:
     """Orchestrates hardware adapters, caching, and notification triggers."""
 
-    def __init__(self, adapters: Optional[List[BasePeripheralAdapter]] = None):
+    def __init__(self, adapters: Optional[List[BasePeripheralAdapter]] = None, config: Optional[Dict[str, Any]] = None):
+        self.config = config or {}
         if adapters is None:
+            kb_interval = self.config.get("keyboard_query_interval", 600)
+            kb_idle = self.config.get("keyboard_idle_threshold", 45)
             self.adapters: List[BasePeripheralAdapter] = [
                 AttackSharkAdapter(),
-                AulaF75Adapter(),
+                AulaF75Adapter(query_interval=kb_interval, idle_threshold=kb_idle),
                 RazerBarracudaAdapter(),
             ]
         else:
@@ -51,12 +54,15 @@ class PeripheralMonitor:
         self.notifications = NotificationManager()
         self._running = False
 
-    def poll_all(self) -> Dict[str, DeviceState]:
+    def poll_all(self, force: bool = False) -> Dict[str, DeviceState]:
         """Poll all configured peripheral adapters and update cache."""
         states: Dict[str, DeviceState] = {}
         for adapter in self.adapters:
             try:
-                state = adapter.poll()
+                try:
+                    state = adapter.poll(force=force)
+                except TypeError:
+                    state = adapter.poll()
                 states[adapter.device_id] = state
                 self.notifications.check_and_notify(state)
             except Exception as e:
